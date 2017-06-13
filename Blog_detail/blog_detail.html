@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="blog_detail_header_model.css">
+    <script src="jquery-1.12.4.js"></script>
+    <script src="blog_detail_header.js"></script>
+    <script>
+        $(function () {
+            var temp = 1;
+            var left_blog_list = "<div class='block_move'></div>";
+            $('.blog_content_and_nav .blog_content').children().each(function () {
+                if ($(this).is("h2")) {
+                    $(this).attr("id", temp);
+                    left_blog_list += "<li class='h2_list'><a href='"+("#"+temp)+"' " +
+                        "data-role='"+temp+"'>"+ $(this).text()
+                        +"</li></a>";
+                    temp++;
+                }
+                if ($(this).is("h3")) {
+                    $(this).attr("id", temp);
+                    left_blog_list += "<li class='h3_list'><a href='"+("#"+temp)+"' " +
+                        "data-role='"+temp+"'>"+ $(this).text()
+                    temp++;
+                }
+            });
+            if (temp!=1) {
+                $('.blog_list').html(left_blog_list);
+                var h2_height = parseInt($('.h3_list').css('height'));
+                var margin_top = parseInt($('.blog_list').offset().top);
+                $('.blog_list li a').click(function () {
+                    var data_role = $(this).attr('data-role');
+                    var result = parseInt(data_role) * h2_height;
+                    $('.blog_list .block_move').animate(
+                        {top: (margin_top + result + 30)}, 300);
+                    for(i=0;i<$('.blog_list li').length;i++) {
+                        if (i==(data_role-1)) {
+                            $('.blog_list li').eq(i).children("a").css({"color":"#00b19e"});
+                        }else {
+                            $('.blog_list li').eq(i).children("a").css({"color":"#494949"});
+                        }
+                    }
+                    setTimeout(function () {
+                        var demo = parseInt($('body,html').scrollTop());
+                        $('body,html').animate({scrollTop: demo - 100}, 100);
+                    },100);
+                });
+            }else {
+                $('.blog_list').hide();
+            }
+            $('.blog_list li:first a').css({"color": "#00b19e"});
+            var h2_height = parseInt($('.h3_list').css('height'));
+            var margin_top = parseInt($('.blog_list').offset().top);
+            var isMove = false;
+            $(window).scroll(function () {
+                if (!$('.blog_list').is(":visible")){
+                    return false;
+                }
+                if (isMove) {
+                    return false;
+                }
+                $('.blog_content_and_nav .blog_content').children("h2").each(function () {
+                    var id = $(this).attr("id");
+                    var offsetTop = $(this).offset().top;
+                    var scrollT = $(window).scrollTop();
+                    if ((offsetTop - scrollT) < 120 && (offsetTop - scrollT) > 80) {
+                        isMove = true;
+                        var result = parseInt(id) * h2_height;
+                        for(i=0;i<$('.blog_list li').length;i++) {
+                            if (i==(id-1)) {
+                                $('.blog_list li').eq(i).children("a").css({"color":"#00b19e"});
+                            }else {
+                                $('.blog_list li').eq(i).children("a").css({"color":"#494949"});
+                            }
+                        }
+                        $('.blog_list .block_move').animate(
+                            {top: (margin_top + result + 30)}, 100, function () {
+                                isMove = false;
+                            });
+                    }
+                });
+                $('.blog_content_and_nav .blog_content').children("h3").each(function () {
+                    var id = $(this).attr("id");
+                    var offsetTop = $(this).offset().top;
+                    var scrollT = $(window).scrollTop();
+                    if ((offsetTop - scrollT) < 120 && (offsetTop - scrollT) > 80) {
+                        var result = parseInt(id) * h2_height;
+                        for(i=0;i<$('.blog_list li').length;i++) {
+                            if (i==(id-1)) {
+                                $('.blog_list li').eq(i).children("a").css({"color":"#00b19e"});
+                            }else {
+                                $('.blog_list li').eq(i).children("a").css({"color":"#494949"});
+                            }
+                        }
+                        $('.blog_list .block_move').animate({top: (margin_top + result + 30)}, 100
+                            , function () {
+                                isMove = false;
+                            });
+                    }
+                });
+                var comment = $('.blog_comment_div').offset().top;
+                var scrollT = $(window).scrollTop();
+                var height = $(window).height();
+            });
+        });
+    </script>
+    <style>
+        .blog_detail_content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 150px;
+        }
+        .blog_detail_content .blog_title {
+            text-align: center;
+            font-size: 28px;
+            /*border-bottom: 1px dotted rgba(0,0,0,0.1);*/
+        }
+
+        @media only screen and (min-width: 1100px) {
+            .blog_detail_content .blog_info {
+                top: 0;
+                width: 12%;
+                height: 100%;
+                /*border-right: 1px dotted rgba(0, 0, 0, 0.1);*/
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                background-color: #494949;
+                color: rgba(255, 255, 255, 0.7);
+                padding-top: 220px;
+            }
+            .blog_content_and_nav .blog_content {
+                width: 60%;
+                height: auto;
+                margin-left: 14%;
+                margin-bottom: 200px;
+            }
+
+            .blog_content_and_nav .blog_list {
+                width: 18%;
+                position: fixed;
+                left: 78%;
+                top: 180px;
+                max-height: 500px;
+                box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+                padding-bottom: 50px;
+                padding-top: 50px;
+                height: auto;
+            }
+
+            .blog_comment_div .comment_div {
+                display: flex;
+                flex-direction: column;
+                width: 78%;
+            }
+            .blog_comment_time_content .comment_time {
+                width: 15.38%;
+                background-color: #494949;
+                display: flex;
+                flex-direction: column;
+                padding: 10px 3%;
+                line-height: 1.5em;
+                box-sizing: border-box;
+                color: rgba(255, 255, 255, 0.7);
+                justify-content: center;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            }
+            .blog_comment_div .lastest_comment_and_blog {
+                width: 22%;
+                display: flex;
+                flex-direction: column;
+                font-size: 20px;
+            }
+            .blog_comment_time_content .comment_content {
+                display: flex;
+                flex-direction: column;
+                width: 84%;
+            }
+        }
+        @media screen and (max-width: 1100px) and (min-width: 800px) {
+            .blog_detail_content .blog_info {
+                top: 0;
+                width: 20%;
+                height: 100%;
+                /*border-right: 1px dotted rgba(0, 0, 0, 0.1);*/
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                background-color: #494949;
+                color: rgba(255, 255, 255, 0.7);
+                padding-top: 220px;
+            }
+            .blog_content_and_nav .blog_content {
+                width: 70%;
+                height: auto;
+                margin-left: 22%;
+                margin-bottom: 200px;
+            }
+            .blog_content_and_nav .blog_list {
+                display: none;
+            }
+
+            .blog_comment_div .comment_div {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .blog_comment_time_content .comment_time {
+                width: 20.7%;
+                background-color: #494949;
+                display: flex;
+                flex-direction: column;
+                padding: 10px 3%;
+                line-height: 1.5em;
+                box-sizing: border-box;
+                color: rgba(255, 255, 255, 0.7);
+                justify-content: center;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            }
+            .blog_comment_div .lastest_comment_and_blog {
+               display: none;
+            }
+            .blog_comment_time_content .comment_content {
+                display: flex;
+                flex-direction: column;
+                width: 84%;
+            }
+        }
+        @media only screen and (max-width: 800px) {
+            .blog_detail_content .blog_info {
+                display: none;
+            }
+            .blog_content_and_nav .blog_content {
+                width: 90%;
+                height: auto;
+                margin-left: 5%;
+                margin-bottom: 200px;
+            }
+            .blog_content_and_nav .blog_list {
+                display: none;
+            }
+
+            .blog_comment_div .comment_div {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .blog_comment_time_content .comment_time {
+                display: none;
+            }
+            .blog_comment_div .lastest_comment_and_blog {
+                display: none;
+            }
+            .blog_comment_time_content .comment_content {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+        .blog_detail_content .blog_info .a_li {
+            margin-left: 5%;
+            margin-right: 10%;
+            padding-top: 1%;
+            padding-bottom: 3px;
+            line-height: 1.5em;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .blog_detail_content .blog_info .a_li li {
+            list-style: none;
+        }
+
+        .blog_detail_content .blog_content_and_nav {
+            display: flex;
+            flex-direction: row;
+        }
+        .blog_comment_div {
+            width: 100%;
+            background-color: white;
+            z-index: 10;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .comment_div .blog_comment_time_content {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .comment_content .a_comment {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            padding: 10px;
+            box-sizing: border-box;
+            padding-left: 5%;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .comment_content .a_comment .comment_detail {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comment_content .a_comment .comment_detail div {
+            margin-left: 15px;
+            color: #494949;
+        }
+
+        .comment_content .a_comment .comment_detail div a {
+            text-decoration: none;
+            color: #494949;
+        }
+
+        .comment_content .a_comment .comment_detail div a:hover {
+            color: #00b19e;
+        }
+
+        .comment_content .a_comment .comment_detail .who_reply {
+            font-size: 17px;
+        }
+
+        .comment_content .a_comment .comment_detail .reply_time {
+            font-size: 13px;
+        }
+
+        .comment_content .root_comment {
+            padding-left: 0.5%;
+        }
+
+        .comment_content .a_comment .reply_button {
+            max-height: 30px;
+            margin-top: 15px;
+            border: none;
+            background-color: #494949;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            opacity: 0;
+            -webkit-transition: opacity ease 0.7s;
+            -moz-transition: opacity ease 0.7s;
+            -ms-transition: opacity ease 0.7s;
+            -o-transition: opacity ease 0.7s;
+            transition: opacity ease 0.7s;
+            flex-shrink: 0;
+        }
+
+        .comment_content .a_comment .replay_content {
+            font-size: 21px;
+        }
+
+        .comment_content .root_comment .reply_button {
+            margin-left: 1.5%;
+            flex-shrink: 0;
+        }
+
+        .comment_content .a_comment:hover .reply_button {
+            opacity: 1;
+            -webkit-transition: opacity ease 0.7s;
+            -moz-transition: opacity ease 0.7s;
+            -ms-transition: opacity ease 0.7s;
+            -o-transition: opacity ease 0.7s;
+            transition: opacity ease 0.7s;
+            flex-shrink: 0;
+        }
+
+        .comment_content .a_comment .reply_button:hover {
+            cursor: pointer;
+        }
+
+        .blog_comment_div .lastest_comment_and_blog .a_lastest_comment {
+            border-bottom: 1px solid #00b19e;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .blog_comment_div .lastest_comment_and_blog .a_lastest_comment a {
+            text-decoration: none;
+            color: #00b19e;
+        }
+
+        .comment_div .blog_comment_time_content .comment_time span {
+            opacity: 0;
+            -webkit-transition: opacity ease 0.7s;
+            -moz-transition: opacity ease 0.7s;
+            -ms-transition: opacity ease 0.7s;
+            -o-transition: opacity ease 0.7s;
+            transition: opacity ease 0.7s;
+        }
+
+        .comment_div .blog_comment_time_content:hover .comment_time span {
+            opacity: 1;
+            -webkit-transition: opacity ease 0.7s;
+            -moz-transition: opacity ease 0.7s;
+            -ms-transition: opacity ease 0.7s;
+            -o-transition: opacity ease 0.7s;
+            transition: opacity ease 0.7s;
+        }
+
+        .blog_list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog_list li {
+            list-style: none;
+        }
+
+        .blog_list li.h2_list {
+            margin-left: 10%;
+            font-size: 20px;
+        }
+        .blog_list li.h3_list {
+            margin-left: 15%;
+            font-size: 18px;
+        }
+        .blog_list li a {
+            text-decoration: none;
+            color: #494949;
+        }
+        .blog_list li a:hover {
+            color: #00b19e;
+        }
+        .blog_list .block_move {
+            content: '';
+            display: block;
+            height: 20px;
+            width: 5px;
+            background-color: #00b19e;
+            position: fixed;
+            left: 78%;
+        }
+    </style>
+</head>
+<body>
+<div class="header_content">
+    <div class="top_nav_content">
+        <nav class="left_nav">
+            <li><span class="to_blog_link">博客</span></li>
+            <li><span class="to_image_link">图片</span></li>
+            <li><span class="to_music_link">音乐</span></li>
+            <li><span class="to_collection_link">收藏</span></li>
+        </nav>
+        <div class="right_nav">
+            <div class="background">
+                <a class="to_github" href="https://github.com/demoyf/" target="_blank"><img
+                        src="img/link/github_icon.jpg" width="100%"></a>
+                <a class="to_sina" href="http://weibo.com/2545689252/profile?rightmod=1&wvr=6&mod=personinfo"
+                   target="_blank">
+                    <img src="img/link/weibo.png" width="100%"></a>
+            </div>
+        </div>
+    </div>
+    <div class="show_blog_name">
+        <span>XYF的个人主页</span>
+    </div>
+    <div class="next_title_content">
+        <span class="small_screen_title">xyf</span>
+        <span class="active_desc"><span class="shuxian">|</span></span>
+        <div class="menu_sign_div">
+            <span class="menu">
+            <span class="ham">
+            </span>
+            </span>
+            <div class="regsiter_or_sign">
+                <a href="toLogin">Sign in</a>,
+                <a href="toLogin">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="blog_detail_content">
+    <div class="blog_title">
+        <span>这是一篇博客</span>
+    </div>
+    <div class="blog_content_and_nav">
+        <div class="blog_info">
+            <div class="a_li">
+                <li class="li_title">Date Time</li>
+                <li>2016-04-07</li>
+                <li>12:12:12</li>
+            </div>
+            <div class="a_li">
+                <li class="li_title">Author</li>
+                <li>XYF</li>
+            </div>
+            <div class="a_li">
+                <li class="li_title">Category</li>
+                <li>技术博客</li>
+            </div>
+            <div class="a_li">
+                <li class="li_title">TAG</li>
+                <div style="display: inline-block">
+                    <span>Android</span>
+                    <span>多线程</span>
+                    <span>Android</span>
+                </div>
+            </div>
+            <div class="a_li">
+                <li class="li_title">Comments</li>
+                <li>0</li>
+            </div>
+        </div>
+        <div class="blog_content">
+            <h2>
+                <font color="cornflowerblue">JavaScript语句</font></h2>
+            <p>
+<span><div><span>注释的内容跟JAVA应该是类似的。</span></div><div><span>// 单行注释</span></div><div><span>/* 多行注释*/</span></div><div><span>js 变量的使用可以不需要声明，但是声明变量是一个好习惯，不过跟强类型的语言不同（JAVA..），JAVA中每一个变量都需要指定确定的变量类型，而js中只需要一个 var表明是一个变量即可。js 在被解释的过程中会自动确定变量的具体类型。</span></div><div><span><br></span></div><div><span>alert(string),弹出框</span></div><div><span>数组 var demo = Array(4);demo[0] = "111";or &nbsp;var demo = Array("111","222");or var demo = ["111","222"];</span></div><div><span><br></span></div><div><span>获取相应的节点，通过document. &nbsp;id:getElementById(id名)。</span></div><div><span>通过标签：getElementByTagName（标签名）。通过类名：getElementByClassName（对象名）。</span></div><div><span>获取到节点之后，可以通过 tempVar.getAttribute(属性名),获取到相应的属性。有get自然就有set 参数是属性名，值。</span></div><div><span>点击事件处理，onclick = "functionName;",如果要防止用户被带到目标的链接窗口，调用方法之后，return false.<br><br><img
+        src="data:image/png;base64,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cp3XxILnIhorB8XXWHcbSsdmbjk4czT4LUUAwDK2XTngylvt5VjXkIU+kLy4eeXgzNHDG36XBwDYXpQDLrttXQ4O76izdnCdl/qcCyfWmnVU8VECAGCVlAMuo+HlOqPX5wMAcNkpBwAAQKIcAAAAiXIAAAAkygEAAJAoBwAAQKIcAAAAiXIAAAAkygEAAJAoBwAAQLLicnAunFjbEQ6vHQznm1sAAIBrw6a8c3D+xM5w9EzzBQAAcE3YtHKwduJc8xUAAHAtUA4AAIBEOQAAAJJNKQfhzB7lAAAArjGbUw4qZ476rUUAAHAt8c4BAACQ+MwBAACQKAcAAECiHAAAAMmmlIP4YWT/h2QAALi2rLgcnAsn1vyWIgAAuBZtyjsHAADAtUc5AAAAEuUAAABIlAMAACBRDgAAgEQ5AAAAEuUAAABIlAMAACBRDgAAgEQ5AAAAEuUAAABIlioHIiIiIiKydbNwORARERERka0d5UBERERERFKUAxERERERSVEOREREREQkRTkQEREREZEU5UBERERERFKUAxERERERSVEOREREREQkRTkQEREREZEU5UBERERERFKUAxERERERSVEOREREREQkRTkQEREREZEU5UBERERERFKUAxERERERSVEOREREREQkRTkQEREREZEU5UBERERERFKUAxERERERSVlpOfjDz/5mOPXxO8IHf+9Xw4kP/3Z48MEHZRPywVO/Hj706C+FTz77/xbPg4iIiIjIerKScvD5L38ylYIPPHRXOPrR/yPc/fH/Kax98lXhzk/9d7IJee8n/km495F/FY6fujcd99I5ERERERFZNispB3FAvf8j71IIrkDicT/50TuL50VEREREZJlsuBzES1viT7AVgyuTeNzj8XeJkYiIiIhsNBsuB/Ha91/72I8WB1e5PImXGHn3QEREREQ2mg2Xg/jh2HgNfGlolcuT+O5B/AB46fyIiIiIiCyaDZeD+NtzSgOrXN7E81A6PyIiIiIii0Y52CJRDkRERERko1EOtkiUAxERERHZaK54Ofj0KyF86+Le+uvnHw7fSlvybPh0c/9DF78cwvceDg81X0+X+3J48fnstk7uDF9p1/OXz4bwyp2FZZbMZNuWNd2XzYxyICIiIiIbzZUtB3Fwb6SC0CsHsTi0JgWic/tYQZiWg680y+aPX2Um27KKArKBKAciIiIistFcsXKQD/4Lywbw9PjvVSViTjn49Kf2hhe/V5WD6rGddx9WFOVARERERLZKrng5WOQn+unSoqg0gGfvPsw26zKk9ScvB3E7N+sdinlRDkRERERko7n2ykFeBvqfRZikfrdgswpBnkk5yHzlL8vLdvPj4QvVsl//0r/s/bm07PwoByIiIiKy0VzhDyS3l//M0x/ym8ddTeWgeeegtUhBeOBLL1ZLvhiePtf9c2nZeVEORERERGSjucLlYL3Jy0GhYFS3v5iG9pFSsbTxkpGXg3Tb5J2NBYrJufeFr8dFv/O+8ED+59Kyc6IciIiIiMhGc4XKwXqH9PbXgg7fOWiH9PYn9v2vNyuDchAzKQjzf43pH3ytXjJeUpT/ubTsrCgHIiIiIrLRXBXvHEwG7PwyofbXmuZD9yTzy0F7ic8VKQcxTUGY/ZmK+rMG9bsF+Z9Ly86OciAiIiIiG80VLwfT6/R7l+FkHzweDtjzy8Fiw/nGM1oOFojPHIiIiIjI1ZQrWw6yAtAfrvMP90bddwAWKAf5Ow/peeZf4rOerL8c+G1FIiIiInJ15YqWg34BmC1/Z2FaDuIHj2MhmAzpyfR/fhaX+XR6ngU+ILyObOSdg1VGORARERGRjeYKX1bUDPnR6HAdh/zeYN++K1D51ivPTv6c5OvJl9uky4uUAxERERHZKrkqPpAsG49yICIiIiIbjXKwRaIciIiIiMhGoxxskSgHIiIiIrLRKAdbJMqBiIiIiGw0Gy4HHzz16+G9n/gnxYFVLk/i8Y/noXR+REREREQWzYbLwamP3xF+7WM/Whxa5fLknkf/ZTj50TuL50dEREREZNFsuBz84Wd/Mxw/dW9xaJXNz9onXxUe+N33hDOfeV/x/IiIiIiILJoNl4OY+FPrOKCWhlfZvMRicP9H3hU+9OgvFc+LiIiIiMgyWUk5iIkD6gceuivc+8i/8hmETU4sBfFSoni8Tzz8y+HzX/5k8ZyIiIiIiCyTlZWDmHhpS3wXIX44Nv72HNmcnPjwb6fj7FIiEREREVllVloORERERETk2o1yICIiIiIiKcqBiIiIiIikKAciIiIiIpKiHIiIiIiISIpyICIiIiIiKcqBiIiIiIikKAciIiIiIpKiHIiIiIiISIpyICIiIiIiKcqBiIiIiIikKAciIiIiIpKiHIiIiIiISMqgHIiIiIiIyPZMpxwAAADbl3IAAAAkygEAAJAoBwAAQKIcAAAAiXIAAAAkygEAAJAoBwAAQKIcAAAAlRD+fxgEHxhd9L6aAAAAAElFTkSuQmCCAA=="
+        alt=""><br><br></span>
+<span><div><span>js是一种解释型语言，跟编译型语言不同。</span></div><div><span>编译型语言需要一个编译器，是一个软件，编译器负责将源代码翻译成可以直接在计算机上执行的文件。编译型的代码出现错误的时候，可以直接在代码编译阶段就能被发现。</span></div><div><span>解释型语言需要的是解释器，浏览器中的JS解释器就可以直接读入源代码并且执行，不同的是，解释型语言智能等到解释器执行到有关代码的时候才能发现。很皮</span></div></span><br>
+<span><div><span><b><span style="color: rgb(54, 101, 238);"><span style="font-size: 13.2pt;"><span
+        style="font-family: 宋体;">获取元素偏移的到顶部的距离，如果和当前滚动的距离相等或者小于</span></span></span></b></span></div><div><span
+        style="font-size: 13.2pt;"><span style="font-family: 宋体;"><span style="color:#7a7a43;">$</span>(<span
+        style="color:#000080;font-weight:bold;">function&nbsp;</span>()&nbsp;{<br></span></span><span><span>&nbsp; &nbsp; <span
+        style="color:#7a7a43;">$</span>(<span style="color:#660e7a;font-weight:bold;">window</span>).<span
+        style="color:#7a7a43;">scroll</span>(<span style="color:#000080;font-weight:bold;">function</span>()&nbsp;{<br>
+&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#000080;font-weight:bold;">var&nbsp;</span><span style="color:#458383;">top1&nbsp;</span>=&nbsp;<span
+            style="color:#7a7a43;">$</span>(<span style="color:#008000;font-weight:bold;">'.f_d'</span>).<span
+            style="color:#7a7a43;">offset</span>().<span style="color:#660e7a;font-weight:bold;">top</span>;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#000080;font-weight:bold;">var&nbsp;</span><span style="color:#458383;">gun&nbsp;</span>=&nbsp;<span
+            style="color:#7a7a43;">$</span>(<span style="color:#000080;font-weight:bold;">this</span>).<span
+            style="color:#660e7a;font-weight:bold;">scrollTop</span>();<br>
+&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#000080;font-weight:bold;">var&nbsp;</span><span style="color:#458383;">top&nbsp;</span>=&nbsp;<span
+            style="color:#458383;">top1</span>-<span style="color:#458383;">gun</span>;<br>
+&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#000080;font-weight:bold;">if&nbsp;</span>(<span style="color:#458383;">top&nbsp;</span>&lt;=&nbsp;<span
+            style="color:#0000ff;">0</span>)&nbsp;{<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#7a7a43;">$</span>(<span
+            style="color:#008000;font-weight:bold;">'.f_d'</span>).<span style="color:#7a7a43;">addClass</span>(<span
+            style="color:#008000;font-weight:bold;">'fixed_top'</span>);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; }<span style="color:#000080;font-weight:bold;">else</span>{<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#7a7a43;">$</span>(<span
+            style="color:#008000;font-weight:bold;">'.f_d'</span>).<span style="color:#7a7a43;">removeClass</span>(<span
+            style="color:#008000;font-weight:bold;">'fixed_top'</span>);<br>
+&nbsp; &nbsp; &nbsp; &nbsp; }<br>
+&nbsp; &nbsp; });</span></span></div><div><span style="font-size: 13.2pt;"><span
+        style="font-family: 宋体;">});</span></span></div></span>
+
+<br></div></span>
+
+            </p>
+            <h3>123456</h3>
+            <span>
+                <span><div><span>js是一种解释型语言，跟编译型语言不同。</span></div><div><span>编译型语言需要一个编译器，是一个软件，编译器负责将源代码翻译成可以直接在计算机上执行的文件。编译型的代码出现错误的时候，可以直接在代码编译阶段就能被发现。</span></div><div><span>解释型语言需要的是解释器，浏览器中的JS解释器就可以直接读入源代码并且执行，不同的是，解释型语言智能等到解释器执行到有关代码的时候才能发现。很皮</span></div></span><br>
+            </span>
+            <h2>hhhh</h2>
+            <span><div><span>js是一种解释型语言，跟编译型语言不同。</span></div><div><span>编译型语言需要一个编译器，是一个软件，编译器负责将源代码翻译成可以直接在计算机上执行的文件。编译型的代码出现错误的时候，可以直接在代码编译阶段就能被发现。</span></div><div><span>解释型语言需要的是解释器，浏览器中的JS解释器就可以直接读入源代码并且执行，不同的是，解释型语言智能等到解释器执行到有关代码的时候才能发现。很皮</span></div></span><br>
+            <h3>123456</h3>
+            <span><div><span>js是一种解释型语言，跟编译型语言不同。</span></div><div><span>编译型语言需要一个编译器，是一个软件，编译器负责将源代码翻译成可以直接在计算机上执行的文件。编译型的代码出现错误的时候，可以直接在代码编译阶段就能被发现。</span></div><div><span>解释型语言需要的是解释器，浏览器中的JS解释器就可以直接读入源代码并且执行，不同的是，解释型语言智能等到解释器执行到有关代码的时候才能发现。很皮</span></div></span><br>
+            <span><div><span>js是一种解释型语言，跟编译型语言不同。</span></div><div><span>编译型语言需要一个编译器，是一个软件，编译器负责将源代码翻译成可以直接在计算机上执行的文件。编译型的代码出现错误的时候，可以直接在代码编译阶段就能被发现。</span></div><div><span>解释型语言需要的是解释器，浏览器中的JS解释器就可以直接读入源代码并且执行，不同的是，解释型语言智能等到解释器执行到有关代码的时候才能发现。很皮</span></div></span><br>
+        </div>
+        <div class="blog_list">
+        </div>
+    </div>
+    <div class="blog_comment_div">
+        <div class="comment_div">
+            <div class="blog_comment_time_content">
+                <div class="comment_time">
+                    <span>2016-04-12</span>
+                    <span>22:22:22</span>
+                </div>
+                <div class="comment_content">
+                    <div class="a_comment root_comment">
+                        <div>
+                            <img src="page_icon.jpg" width="60px">
+                        </div>
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                            <div class="replay_content">
+                                <p>这篇文章写的还可以，不过有一部分不太好理解，继续努力</p>
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                </div>
+            </div>
+            <div class="blog_comment_time_content">
+                <div class="comment_time">
+                    <span>2016-04-12</span>
+                    <span>22:22:22</span>
+                </div>
+                <div class="comment_content">
+                    <div class="a_comment root_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                </div>
+            </div>
+            <div class="blog_comment_time_content">
+                <div class="comment_time">
+                    <span>2016-04-12</span>
+                    <span>22:22:22</span>
+                </div>
+                <div class="comment_content">
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                </div>
+            </div>
+            <div class="blog_comment_time_content">
+                <div class="comment_time">
+                    <span>2016-04-12</span>
+                    <span>22:22:22</span>
+                </div>
+                <div class="comment_content">
+                    <div class="a_comment root_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                    <div class="a_comment">
+                        <img src="page_icon.jpg" width="60px">
+                        <div class="comment_detail">
+                            <div class="who_reply">
+                                <a href="">XYF</a> 回复：<a href="">DDD</a>
+                            </div>
+                            <div class="reply_time">
+                                2017-04-07 22:22:22
+                            </div>
+                        </div>
+                        <button class="reply_button">回复</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="lastest_comment_and_blog">
+            <div style="font-size: 25px;text-align: center;color: #00b19e">最新评论</div>
+            <div class="a_lastest_comment">
+                <a href="#">1</a>发表于《
+                <a href="#">这是一篇新的博客...</a>
+                》
+            </div>
+            <div class="a_lastest_comment">
+                <a href="#">1</a>发表于《
+                <a href="#">这是一篇新的博客...</a>
+                》
+            </div>
+            <div class="a_lastest_comment">
+                <a href="#">1</a>发表于《
+                <a href="#">这是一篇新的博客...</a>
+                》
+            </div>
+        </div>
+    </div>
+</div>
+<div class="small_left_nav">
+    <li class="to_li">To</li>
+    <li><span>博客</span></li>
+    <li><span>图片</span></li>
+    <li><span>音乐</span></li>
+    <li><span>收藏</span></li>
+    <li class="to_sign_in">Sign in,up</li>
+    <li><a href="toLogin">Sign in</a></li>
+    <li><a href="toLogin">Sign up</a></li>
+    <li class="about_li">About</li>
+    <li class="github_li">
+        <a class="to_github" href="https://github.com/demoyf/" target="_blank"><img
+                src="img/link/github_icon.jpg" width="100%"></a>
+    </li>
+    <li class="sina_li">
+        <a class="to_sina" href="http://weib.com/2545689252/profile?rightmod=1&wvr=6&mod=personinfo"
+           target="_blank">
+            <img src="img/link/weibo.png" width="100%"></a>
+    </li>
+</div>
+</body>
+</html>
